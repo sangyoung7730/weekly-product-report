@@ -1,0 +1,27 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cd \"D:/claude/25년 주별수량\" && python3 -c \"\nimport openpyxl\nwb = openpyxl.load_workbook\\('25년도 주차별 생활재 공급수량.xlsx', data_only=True\\)\nprint\\('=== 공급수량 ==='\\)\nprint\\('Sheets:', wb.sheetnames\\)\nws = wb.active\nprint\\('Sheet name:', ws.title\\)\nprint\\('Dimensions:', ws.dimensions\\)\nprint\\('Max row:', ws.max_row, 'Max col:', ws.max_column\\)\nprint\\(\\)\nfor row in ws.iter_rows\\(min_row=1, max_row=min\\(10, ws.max_row\\), values_only=False\\):\n    print\\([cell.value for cell in row]\\)\n\")",
+      "Bash(which python:*)",
+      "Bash(python -c \"import openpyxl; print\\('ok'\\)\" 2>&1 || pip install openpyxl 2>&1)",
+      "Bash(/c/Users/User/AppData/Local/Microsoft/WindowsApps/python --version 2>&1; node --version 2>&1)",
+      "Bash(node --version 2>&1 && npm --version 2>&1)",
+      "Bash(cd \"D:/claude/25년 주별수량\" && npm install xlsx 2>&1 | tail -5)",
+      "Bash(cd \"D:/claude/25년 주별수량\" && node -e \"\nconst XLSX = require\\('xlsx'\\);\n\n// 공급수량\nconst wb1 = XLSX.readFile\\('25년도 주차별 생활재 공급수량.xlsx'\\);\nconsole.log\\('=== 공급수량 ==='\\);\nconsole.log\\('Sheets:', wb1.SheetNames\\);\nconst ws1 = wb1.Sheets[wb1.SheetNames[0]];\nconst data1 = XLSX.utils.sheet_to_json\\(ws1, {header:1}\\);\nfor\\(let i=0; i<Math.min\\(8, data1.length\\); i++\\) {\n  console.log\\('Row', i, ':', JSON.stringify\\(data1[i]\\)\\);\n}\nconsole.log\\('Total rows:', data1.length\\);\nconsole.log\\('Cols in row 0:', data1[0]?.length\\);\n\nconsole.log\\(\\);\n\n// 매출\nconst wb2 = XLSX.readFile\\('25년도 주차별 생활재 매출.xlsx'\\);\nconsole.log\\('=== 매출 ==='\\);\nconsole.log\\('Sheets:', wb2.SheetNames\\);\nconst ws2 = wb2.Sheets[wb2.SheetNames[0]];\nconst data2 = XLSX.utils.sheet_to_json\\(ws2, {header:1}\\);\nfor\\(let i=0; i<Math.min\\(8, data2.length\\); i++\\) {\n  console.log\\('Row', i, ':', JSON.stringify\\(data2[i]\\)\\);\n}\nconsole.log\\('Total rows:', data2.length\\);\n\")",
+      "Bash(cd \"D:/claude/25년 주별수량\" && node -e \"\nconst XLSX = require\\('xlsx'\\);\nconst fs = require\\('fs'\\);\n\n// 공급수량\nconst wb1 = XLSX.readFile\\('25년도 주차별 생활재 공급수량.xlsx'\\);\nconst ws1 = wb1.Sheets[wb1.SheetNames[0]];\nconst qty = XLSX.utils.sheet_to_json\\(ws1, {header:1}\\);\n\n// 매출\nconst wb2 = XLSX.readFile\\('25년도 주차별 생활재 매출.xlsx'\\);\nconst ws2 = wb2.Sheets[wb2.SheetNames[0]];\nconst sales = XLSX.utils.sheet_to_json\\(ws2, {header:1}\\);\n\nconst items = [];\nfor\\(let i=3; i<qty.length; i++\\) {\n  const row = qty[i];\n  if\\(!row || !row[1]\\) continue;\n  const code = row[0];\n  const name = row[1];\n  const weeks = [];\n  for\\(let w=2; w<=53; w++\\) {\n    weeks.push\\(row[w] || 0\\);\n  }\n  const total = row[54] || 0;\n  \n  // find matching sales row\n  let salesWeeks = new Array\\(52\\).fill\\(0\\);\n  let salesTotal = 0;\n  for\\(let j=3; j<sales.length; j++\\) {\n    if\\(sales[j] && sales[j][0] === code && sales[j][1] === name\\) {\n      for\\(let w=2; w<=53; w++\\) {\n        salesWeeks[w-2] = sales[j][w] || 0;\n      }\n      salesTotal = sales[j][54] || 0;\n      break;\n    }\n  }\n  \n  items.push\\({code, name, qty: weeks, qtyTotal: total, sales: salesWeeks, salesTotal}\\);\n}\n\nfs.writeFileSync\\('data.json', JSON.stringify\\(items\\)\\);\nconsole.log\\('Items count:', items.length\\);\nconsole.log\\('Sample:', JSON.stringify\\(items[0]\\).substring\\(0, 200\\)\\);\n\")",
+      "Bash(cd \"D:/claude/25년 주별수량\" && node extract.js)",
+      "Bash(cd \"D:/claude/25년 주별수량\" && node -e \"const d = require\\('./data.json'\\); console.log\\(d.length\\)\")",
+      "Bash(cd \"D:/claude/25년 주별수량\" && node build.js)",
+      "Bash(start \"\" \"D:/claude/25년 주별수량/index.html\")",
+      "Bash(cd \"D:/claude/25년 주별수량\" && node -e \"\nconst XLSX = require\\('xlsx'\\);\nconst wb1 = XLSX.readFile\\('24년도 주차별 생활재 공급수량.xlsx'\\);\nconst ws1 = wb1.Sheets[wb1.SheetNames[0]];\nconst d1 = XLSX.utils.sheet_to_json\\(ws1, {header:1}\\);\nconsole.log\\('=== 24년 공급수량 ==='\\);\nconsole.log\\('Sheet:', wb1.SheetNames\\);\nconsole.log\\('Rows:', d1.length\\);\nfor\\(let i=0;i<5;i++\\) console.log\\('Row',i,':',JSON.stringify\\(d1[i]\\).substring\\(0,300\\)\\);\n\nconst wb2 = XLSX.readFile\\('24년도 주차별 생활재 매출.xlsx'\\);\nconst ws2 = wb2.Sheets[wb2.SheetNames[0]];\nconst d2 = XLSX.utils.sheet_to_json\\(ws2, {header:1}\\);\nconsole.log\\('=== 24년 매출 ==='\\);\nconsole.log\\('Sheet:', wb2.SheetNames\\);\nconsole.log\\('Rows:', d2.length\\);\nfor\\(let i=0;i<5;i++\\) console.log\\('Row',i,':',JSON.stringify\\(d2[i]\\).substring\\(0,300\\)\\);\n\" 2>&1)",
+      "Bash(wc -l \"D:/claude/25년 주별수량/24~25년 주차별 품목수량&매출.html\")",
+      "Bash(start \"\" \"D:/claude/25년 주별수량/24~25년 주차별 품목수량&매출.html\")",
+      "Bash(start \"http://localhost:8080/24~25%EB%85%84%20%EC%A3%BC%EC%B0%A8%EB%B3%84%20%ED%92%88%EB%AA%A9%EC%88%98%EB%9F%89%26%EB%A7%A4%EC%B6%9C.html\")",
+      "Bash(powershell -Command \"Start-Process 'http://localhost:8080'\")",
+      "Bash(explorer \"http://localhost:8080\")",
+      "Bash(winget install:*)",
+      "Bash(export PATH=\"$PATH:/c/Program Files/GitHub CLI\" && gh --version 2>&1)",
+      "Bash(export PATH=\"$PATH:/c/Program Files/GitHub CLI\" && gh auth status 2>&1)"
+    ]
+  }
+}
