@@ -45,6 +45,36 @@ canvas { max-height: 350px; }
 .pagination button.active { background: #1a73e8; color: white; border-color: #1a73e8; }
 .pagination button:disabled { opacity: 0.4; cursor: default; }
 .week-range-wrap { display: flex; align-items: center; gap: 6px; }
+.filter-toggle { display: none; padding: 10px 20px; background: #1a73e8; color: white; border: none; border-radius: 6px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: inherit; width: 100%; }
+
+@media (max-width: 768px) {
+  .header { padding: 14px 16px; }
+  .header h1 { font-size: 17px; }
+  .header p { font-size: 11px; }
+  .controls { padding: 12px 16px; flex-direction: column; align-items: stretch; gap: 10px; }
+  .controls.collapsed > *:not(.filter-toggle) { display: none; }
+  .controls.collapsed .filter-toggle { display: block; }
+  .filter-toggle { display: block; }
+  .controls input[type="text"] { width: 100%; }
+  .controls select { width: 100%; }
+  .week-range-wrap { flex-wrap: wrap; }
+  .week-range-wrap select { flex: 1; min-width: 0; }
+  .summary { padding: 10px 16px; font-size: 11px; }
+  .table-wrap { padding: 8px; }
+  table { font-size: 11px; }
+  thead th { padding: 8px 5px; font-size: 11px; }
+  thead th.week-col { min-width: 55px; }
+  tbody td { padding: 6px 4px; }
+  tbody td:nth-child(2) { min-width: 120px; font-size: 11px; }
+  .tabs { margin-left: 0; width: 100%; }
+  .tab { flex: 1; text-align: center; padding: 10px 8px; font-size: 13px; }
+  .btn { width: 100%; padding: 12px; font-size: 14px; }
+  .pagination { padding: 10px 16px; flex-wrap: wrap; justify-content: center; gap: 4px; }
+  .pagination button { padding: 8px 12px; font-size: 12px; min-width: 36px; }
+  .pagination span { width: 100%; text-align: center; margin-top: 4px; }
+  .chart-area { padding: 12px 16px; margin: 8px; }
+  canvas { max-height: 250px; }
+}
 </style>
 </head>
 <body>
@@ -52,7 +82,8 @@ canvas { max-height: 350px; }
   <h1>2025년 주차별 생활재 공급수량 & 매출 조회</h1>
   <p>축수산팀 | 총 727개 품목 | 1주 ~ 52주</p>
 </div>
-<div class="controls">
+<div class="controls" id="controlsPanel">
+  <button class="filter-toggle" onclick="toggleFilter()">필터 열기/닫기</button>
   <label>품목 검색</label>
   <input type="text" id="search" placeholder="품목명 또는 코드 입력..." oninput="applyFilter()">
   <label>보기</label>
@@ -307,6 +338,14 @@ function exportCSV() {
   a.href = URL.createObjectURL(blob);
   a.download = '25년_주차별_' + (mode==='qty'?'수량':mode==='sales'?'매출':'수량매출') + '.csv';
   a.click();
+}
+
+function toggleFilter() {
+  document.getElementById('controlsPanel').classList.toggle('collapsed');
+}
+// 모바일에서 초기 상태: 필터 접기
+if (window.innerWidth <= 768) {
+  document.getElementById('controlsPanel').classList.add('collapsed');
 }
 
 applyFilter();
